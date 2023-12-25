@@ -1,4 +1,3 @@
 export default {
-  base: `/Todo-App-Typescript-
-    /`,
+  base: `/Todo-App-Typescript-/`,
 };

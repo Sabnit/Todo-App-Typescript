@@ -28,10 +28,16 @@ const domElement = {
   addBtn: document.getElementById("addTask") as HTMLButtonElement,
 };
 
+type task = {
+  taskId: string;
+  taskName: string;
+  taskCompleted: boolean;
+};
+
 // Arrays to store tasks
-let taskListArray: ITask[] = [];
-let remainingTaskArray: ITask[] = [];
-let completedTaskArray: ITask[] = [];
+let taskListArray: task[] = [];
+let remainingTaskArray: task[] = [];
+let completedTaskArray: task[] = [];
 
 // Flags to track tab clicks
 let clickedAllTab: boolean = true;
@@ -80,16 +86,10 @@ domElement.addBtn.addEventListener("click", addTask);
 domElement.taskInputField.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
-    debugger;
+
     addTask();
   }
 });
-
-interface ITask {
-  taskId: string;
-  taskName: string;
-  taskCompleted: boolean;
-}
 
 // Funtion to handel navbar event listeners
 function handleNavClick(clickedElement: HTMLAnchorElement) {
@@ -112,7 +112,7 @@ function handleNavClick(clickedElement: HTMLAnchorElement) {
 }
 
 // Function to filter tasks based on the search input value
-function applySearchFilter(value: string, tasks: ITask[]) {
+function applySearchFilter(value: string, tasks: task[]) {
   clearContent();
   const filteredTasks = tasks.filter((task) =>
     task.taskName.toLowerCase().includes(value.toLowerCase())
@@ -152,7 +152,7 @@ function addTask(): void {
   )
     return;
   domElement.taskInputField.value = "";
-  var todoObject: ITask = {
+  var todoObject: task = {
     taskId: getRandomString(ID_LENGTH),
     taskName: taskName,
     taskCompleted: false,
@@ -173,7 +173,6 @@ function addTask(): void {
 
 // function to render all the tasks in the home navbar
 function renderTaskList(): void {
-  debugger;
   // Flags to track completed task is clicked
   clickedCompletedTab = false;
   clickedRemainingTab = false;
@@ -181,9 +180,9 @@ function renderTaskList(): void {
 
   clearContent();
 
-  if (taskListArray.length > 0) {
-    domElement.emptyListContainer.style.display = "none";
-  }
+  if (!(taskListArray.length > 0)) return;
+  domElement.emptyListContainer.style.display = "none";
+
   for (let index = 0; index < taskListArray.length; index++) {
     createElement(taskListArray[index]);
   }
@@ -192,7 +191,6 @@ function renderTaskList(): void {
 // Function to render completed task in the completed navbar
 function renderCompletedTask(): void {
   // Flags to track completed task is clicked
-  debugger;
   clickedCompletedTab = true;
   clickedAllTab = false;
   clickedRemainingTab = false;
@@ -206,7 +204,6 @@ function renderCompletedTask(): void {
   }
 
   for (let index = 0; index < completedTaskArray.length; index++) {
-    console.log(completedTaskArray[index]);
     createElement(completedTaskArray[index]);
   }
 }
@@ -235,9 +232,9 @@ function clearContent(): void {
 }
 
 // Function to create HTML elements for tasks
-function createElement(task: ITask): void {
+function createElement(task: task): void {
   // creates li.task > p.task-contents > input(checkbox).checkbox
-  debugger;
+
   const dynamicLi = document.createElement("li");
   dynamicLi.classList.add("task");
 
@@ -259,15 +256,8 @@ function createElement(task: ITask): void {
   // toggle to set the value of checkbox to checked
   if (task.taskCompleted) {
     checkBox.checked = true;
-    document.querySelectorAll(".task-contents")?.forEach((task) => {
-      task.classList.add("task-completed");
-      // console.log(task);
-    });
   } else {
     checkBox.checked = false;
-    document.querySelectorAll(".task-contents")?.forEach((task) => {
-      task.classList.remove("task-completed");
-    });
   }
 }
 
@@ -292,17 +282,6 @@ function checkTaskStatus(event: Event): void {
     if (taskObj) {
       taskObj.taskCompleted = target.checked;
 
-      const taskContents =
-        target.parentElement?.querySelector(".task-contents");
-
-      if (taskContents) {
-        if (taskObj.taskCompleted) {
-          taskContents.classList.add("task-completed");
-        } else {
-          taskContents.classList.remove("task-completed");
-        }
-      }
-
       // Adds or removes task from the array based on task completed or remaining
       if (taskObj.taskCompleted) {
         completedTaskArray.push(taskObj);
@@ -316,27 +295,25 @@ function checkTaskStatus(event: Event): void {
 }
 
 // Functions to remove unchecked tasks from completed arrays
-function removeUncheckedTaskFromCompleted(taskObj: ITask): void {
+function removeUncheckedTaskFromCompleted(taskObj: task): void {
   const index = completedTaskArray.findIndex(
     (task) => task.taskId === taskObj.taskId
   );
   if (index !== -1) {
     completedTaskArray.splice(index, 1);
-    if (clickedCompletedTab) {
-      renderCompletedTask();
-    }
+    if (!clickedCompletedTab) return;
+    renderCompletedTask();
   }
 }
 
 // Functions to remove checked tasks from remaining arrays
-function removeCheckedTaskFromRemaining(taskObj: ITask) {
+function removeCheckedTaskFromRemaining(taskObj: task) {
   const index = remainingTaskArray.findIndex(
     (task) => task.taskId === taskObj.taskId
   );
   if (index !== -1) {
     remainingTaskArray.splice(index, 1);
-    if (clickedRemainingTab) {
-      renderRemainingTask();
-    }
+    if (!clickedRemainingTab) return;
+    renderRemainingTask();
   }
 }

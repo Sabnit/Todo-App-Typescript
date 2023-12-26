@@ -26,7 +26,6 @@ git clone https://github.com/yourusername/your-repository.git
 ### Install dependencies
 
 ```
-clone the repo
 npm install
 ```
 

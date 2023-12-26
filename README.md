@@ -20,7 +20,7 @@ This is a simple todo application named "Listify." It allows users to add, manag
 ### Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/your-repository.git
+git clone https://github.com/Sabnit/Todo-App-Typescript.git
 ```
 
 ### Install dependencies

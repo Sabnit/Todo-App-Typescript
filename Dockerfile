@@ -1,4 +1,4 @@
-# Use an appropriate base image (e.g., Node.js)
+# Using Node-alpine as base image
 FROM node:lts-alpine
 
 # Set the working directory inside the container
@@ -13,8 +13,8 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
-# Expose the port your application runs on
+
 EXPOSE 3000
 
-# Specify the command to start the application
+# Command to start the application
 CMD npm run dev -- --host
